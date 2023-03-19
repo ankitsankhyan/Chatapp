@@ -12,6 +12,6 @@ app.get('/', (req,res)=>{
     res.send('App is running');
 })
 
-app.get('/chats',(req,res)=>{
+app.get('/api/chat',(req,res)=>{
     res.send(chats);
 })
