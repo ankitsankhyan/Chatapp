@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5000;
 
 connectDB();
 app.listen(PORT, function(err){
-    console.log('server started');
+    console.log(`server started at ${PORT}`);
 })
 
 app.get('/', (req,res)=>{
@@ -16,5 +16,6 @@ app.get('/', (req,res)=>{
 })
 
 app.get('/api/chat',(req,res)=>{
+    
     res.send(chats);
 })
