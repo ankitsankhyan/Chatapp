@@ -45,6 +45,7 @@ const authUser = asyncHandler(async(req, res)=>{
   const user = await User.findOne({email});
   
   console.log(user.matchPassword);
+  // user doc will have that function written in model
   if (user && (user.matchPassword(password))) {
     console.log(user);
     res.status(201).json({
