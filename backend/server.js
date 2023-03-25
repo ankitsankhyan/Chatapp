@@ -1,10 +1,11 @@
 const express = require('express');
-const chats = require('./data/data').chats;
+const chats = require('./data/data');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 const dotenv = require("dotenv");
+const bodyParser = require('body-parser');
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 
@@ -20,6 +21,5 @@ app.get('/', (req,res)=>{
     res.send('App is running');
 })
 
-app.use('/api/user',userRoutes);
-    
+app.use('/api/user', userRoutes);
  

@@ -107,4 +107,5 @@ const chats = [
     },
   ];
 
-  module.exports.chats = chats;
+  module.exports = chats;
+  
