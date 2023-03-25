@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../model/userModel");
 const generateToken = require('../config/generateToken');
-const { findOne } = require("../model/userModel");
+
 const registerUser = asyncHandler(async (req, res) => {
   console.log('printing');
   console.log(req.body);
@@ -31,7 +31,7 @@ const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       pic: user.pic,
-      token :generateToken(_id)
+      token :generateToken(user._id)
     });
   }else{
     return res.status(400);
@@ -42,9 +42,10 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const authUser = asyncHandler(async(req, res)=>{
   const{email,password} = req.body;
-  const user = await findOne({email});
-
-  if (user && (User.matchpassword(password))) {
+  const user = await User.findOne({email});
+  
+  console.log(user.matchPassword);
+  if (user && (user.matchPassword(password))) {
     console.log(user);
     res.status(201).json({
         
@@ -52,7 +53,7 @@ const authUser = asyncHandler(async(req, res)=>{
       name: user.name,
       email: user.email,
       pic: user.pic,
-      token :generateToken(_id)
+      token :generateToken(user._id)
     });
   }else{
     res.status(400);

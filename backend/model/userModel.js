@@ -1,46 +1,47 @@
-const mongoose = require('mongoose');
-
-const userSchema = mongoose.Schema({
-    name:{
-        type:String,
-        required: true
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const userSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-    email:{
-        type:String,
-        unique:true,
-        required:true
+    email: {
+      type: String,
+      unique: true,
+      required: true,
     },
-    password:{type:String, require:true},
-    pic:{
-        type:String,
-        default:  
-              "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
-
+    password: { type: String, require: true },
+    pic: {
+      type: String,
+      default:
+        "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
-    isAdmin:{
-        type:Boolean,
-        required:true,
-        default:false,
+    isAdmin: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
-
-
-},{
-    timestamps:true
-}
+  },
+  {
+    timestamps: true,
+  }
 );
-userSchema.pre('save', async function(next){
-    if(!this.ismodified){
-        next();
-    }
+userSchema.pre("save", async function (next) {
+ 
+  if (!this.ismodified) {
+  
 
-    const salt = await bcrypt.genSalt(10);  // generates random string which is used to hash password
-    // 
+    const salt = await bcrypt.genSalt(10); // generates random string which is used to hash password
+
     this.password = await bcrypt.hash(this.password, salt);
-})
+    next();
+  }
+});
 
-userSchema.methods.matchPassword = async function(enterPassword){
-    return await bcrypt.compare(enterPassword, this.password);
-}
+userSchema.methods.matchPassword = async function (enterPassword) {
+  return await bcrypt.compare(enterPassword, this.password);
+};
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
