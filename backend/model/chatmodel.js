@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs')
 const chatmodel = mongoose.Schema({
 
-    chatname:{
+    chatName:{
         type:String,
-        trim:true
+        trim:true,
+        require:true,
     },
     isGroupChat:{type:Boolean, default:false},
     users:[{

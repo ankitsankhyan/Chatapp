@@ -63,9 +63,69 @@ const fetchChats = async (req, res) => {
     });
     console.log(chats);
     res.send(chats);
-  } catch (error) {}
+  } catch (error) {
+    res.status(400);
+    throw new Error(error.message);
+  }
 };
+
+const createGroupChat = asyncHandler(async(req, res) => {
+    if(!req.body.users || !req.body.name){
+      return res.status(400).json({message:"please fill all fields"});
+    }
+// users give will be in string hence we have to parse them into array
+    var users = JSON.parse(req.body.users);
+    if(users.length < 2){
+      return res.status(400).send("No more than 2 users are required");
+    }
+
+    users.push(req.user);
+    // creating group chat
+    try{
+       const groupChat = await Chat.create({
+        chatName: req.body.name,
+        users:users,
+        isGroupChat:true,
+        groupAdmin:req.user,
+       })
+       const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
+       .populate("users", "-password")
+       .populate("groupAdmin", "-password");
+ 
+     res.status(200).json(fullGroupChat);
+
+       
+    }catch(error){
+      throw new Error(error.message);
+    }
+})
+
+
+const renameGroup = asyncHandler(async (req, res) => {
+  const { chatId, chatName } = req.body;
+// note new = true basically returns updated values
+  const updatedChat = await Chat.findByIdAndUpdate(
+    chatId,
+    {
+      chatName: chatName,
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
+
+  if (!updatedChat) {
+    res.status(404);
+    throw new Error("Chat Not Found");
+  } else {
+    res.json(updatedChat);
+  }
+});
 module.exports = {
   accessChat,
   fetchChats,
+  createGroupChat,
+  renameGroup,
 };
