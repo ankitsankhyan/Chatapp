@@ -47,7 +47,7 @@ const authUser = asyncHandler(async(req, res)=>{
   console.log(user.matchPassword);
   // user doc will have that function written in model
   if (user && (user.matchPassword(password))) {
-    console.log(user);
+    console.log(user, "after matching password");
     res.status(201).json({
         
       _id: user._id,

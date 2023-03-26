@@ -1,18 +1,68 @@
 import React from 'react'
 import {FormLabel,Input, FormControl, VStack ,InputGroup,Button,InputRightElement} from '@chakra-ui/react'
 import { useState } from 'react';
-
+import axios from 'axios';
+import { useToast } from '@chakra-ui/react';
 const Login = () => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [show, setshow] = useState('false');
-
+    var toast = useToast();
     const handleClick = ()=>{
         setshow(!show);
     }
-    const submitHandler = ()=>{
+    const submitHandler =async ()=>{
+      if (!email || !password ) {
+        toast({
+          title: "Please Fill all the Feilds",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        return;
+      }
+      try{
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+  
+        var data = await axios.post("/api/user/login", {
+          email,password
+        }, config);
+      }catch(e){
+          console.log(e.response.data);
+      }
+     
+console.log(data);
+     
 
-    }
+      if(data){
+
+        toast({
+          title: "Successfully Login",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+
+        
+
+
+      }else{
+        toast({
+          title: "Error occured",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      }
+      return;
+      }
   return (
     <VStack>
     
