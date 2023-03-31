@@ -148,7 +148,21 @@ const addToGroup = asyncHandler(async(req,res) =>{
 
 
 });
+const removeFromGroup= asyncHandler(async(req, res) =>{
+      const {chatId , userId} = req.body;
 
+      const removed = Chat.findByIdAndDelete(chatId, {
+           $pull:{users:userId}
+      })
+
+      if(removed){
+        res.status(200).json({
+          removed
+        })
+      }else{
+        throw new Error('No chat found');
+      }
+})
 
 module.exports = {
   accessChat,
