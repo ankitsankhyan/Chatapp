@@ -102,7 +102,9 @@ const createGroupChat = asyncHandler(async(req, res) => {
 
 
 const renameGroup = asyncHandler(async (req, res) => {
+  console.log('running');
   const { chatId, chatName } = req.body;
+ 
 // note new = true basically returns updated values
   const updatedChat = await Chat.findByIdAndUpdate(
     chatId,
@@ -128,7 +130,7 @@ const addToGroup = asyncHandler(async(req,res) =>{
       
   const{chatId, userId} = req.body;
 
-  const added = Chat.findByIdAndUpdate(chatId, {
+  const added = await Chat.findByIdAndUpdate(chatId, {
      
         $push :{users: userId},
     
@@ -151,7 +153,7 @@ const addToGroup = asyncHandler(async(req,res) =>{
 const removeFromGroup= asyncHandler(async(req, res) =>{
       const {chatId , userId} = req.body;
 
-      const removed = Chat.findByIdAndDelete(chatId, {
+      const removed =await Chat.findByIdAndDelete(chatId, {
            $pull:{users:userId}
       })
 
@@ -160,7 +162,7 @@ const removeFromGroup= asyncHandler(async(req, res) =>{
           removed
         })
       }else{
-        throw new Error('No chat found');
+        throw new Error('No User found');
       }
 })
 
@@ -170,5 +172,5 @@ module.exports = {
   createGroupChat,
   renameGroup,
   addToGroup,
-
+  removeFromGroup,
 };
