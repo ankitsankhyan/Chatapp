@@ -52,6 +52,7 @@ const accessChat = asyncHandler(async (req, res) => {
 const fetchChats = async (req, res) => {
   console.log("inside fetch");
   try {
+    // finding userId in each array of chats and returning that chat document
     var chats = await Chat.find({ users: { $elemMatch: { $eq: req.user.id } } })
       .populate("users", "-password")
       .populate("groupAdmin", "-password")

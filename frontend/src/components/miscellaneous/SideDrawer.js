@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box, Button, Tooltip, Text } from "@chakra-ui/react";
 import { Avatar, AvatarBadge, AvatarGroup } from '@chakra-ui/react'
+import {spinner} from '@chakra-ui/spinner'
 import ChatLoading from './chatloading.js';
 import {
    useToast,
@@ -36,10 +37,9 @@ const SideDrawer = () => {
   const {
     setSelectedChat,
     user,
-    notification,
-    setNotification,
     chats,
     setChats,
+    selectedChat
   } = ChatState();
 
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -51,9 +51,7 @@ const SideDrawer = () => {
    }
   // 
    const handleSearch=async()=>{
-   var user = localStorage.getItem('userInfo');
-   user = JSON.parse(user);
-   user = user.data;
+  
      if(!search){
       toast({
         title: "Please Enter Something in Search!",
@@ -70,14 +68,15 @@ setLoading(true);
     
       const config = {
         headers:{
+
           Authorization: `Bearer ${user.token}`,
         }
       
       };
-      const data = await axios.get(`/api/user/?search=${search}`, config);
+      const {data} = await axios.get(`/api/user/?search=${search}`, config);
       console.log(data);
       setLoading(false);
-      setSearchResult(data.data)
+      setSearchResult(data)
      }catch(error){
      
       console.log(error);
@@ -96,22 +95,33 @@ setLoading(true);
 
    const accessChat = async (userId) => {
     console.log(userId);
+    console.log(user);
 
     try {
       setLoadingChat(true);
+      // on sending data post content type must be specified
       const config = {
         headers: {
           "Content-type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.post(`/api/chat`, { userId }, config);
 
-      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      // requenst to make chat in API and chat which is created will be sent in data
+
+      const { data } = await axios.post(`/api/chat`, { userId }, config);
+      console.log(data);
+// if chat with this user id already existed then we are going to append the older chat with this data and setChats as shown below
+      // if(chats){
+      //   if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      // }
+    
+      
       setSelectedChat(data);
-      setLoadingChat(false);
-      onClose();
+    
+    
     } catch (error) {
+     console.log(error);
       toast({
         title: "Error fetching the chat",
         description: error.message,
@@ -120,10 +130,11 @@ setLoading(true);
         isClosable: true,
         position: "bottom-left",
       });
+
     }
   };
 
- console.log(searchResult, 'is my result');
+ 
   return (
     <>
     
@@ -181,7 +192,7 @@ setLoading(true);
             <Box display="flex" p={1}>
             <Input mx={1} placeholder='Type here...'  onChange={(e)=>{
                  searchquery(e.target.value);
-                console.log(e.target.value);
+                
             }} />
             <Button 
             colorScheme='blue'
@@ -201,7 +212,8 @@ setLoading(true);
             )}
             
           </DrawerBody>
-        
+          {/* this is the spinner which is going to be working till chat is loaded */}
+ {LoadingChat && <spinner ml = "auto" display = "flex" /> }
           <DrawerFooter>
             <Button variant='outline' mr={3} onClick={onClose}>
               Cancel
