@@ -32,12 +32,17 @@ const SideDrawer = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [Loading, setLoading] = useState(false);
   const [LoadingChat, setLoadingChat] = useState();
-  const user= ChatState();
+  const user = ChatState();
   const { isOpen, onOpen, onClose } = useDisclosure()
    const btnRef = React.useRef()
   const toast = useToast();
+   const searchquery = (query)=>{
+   
+        setSearch(query);
+   }
+  // 
    const handleSearch=async()=>{
-    console.log('running');
+   
      if(!search){
       toast({
         title: "Please Enter Something in Search!",
@@ -48,9 +53,10 @@ const SideDrawer = () => {
       });
       return;
      }
-
+setLoading(true);
+setLoading(false);
      try{
-      setLoading(true);
+    
       const config = {
         headers:{
           Authorization: `Bearer ${user.token}`,
@@ -61,7 +67,16 @@ const SideDrawer = () => {
       setLoading(false);
       setSearchResult(data)
      }catch(error){
-
+      setLoading(false);
+      toast({
+        title: "Could not retrive data",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      
+      });
+      
      }
    };
 
@@ -118,17 +133,23 @@ const SideDrawer = () => {
           <DrawerCloseButton />
           <DrawerHeader>Search Users</DrawerHeader>
 
-          <DrawerBody display={'Flex'}>
-            <Input mx={1} placeholder='Type here...' />
+          <DrawerBody >
+            <Box display="flex" p={1}>
+            <Input mx={1} placeholder='Type here...'  onChange={(e)=>{
+                 searchquery(e.target.value);
+                console.log(e.target.value);
+            }} />
             <Button 
             colorScheme='blue'
             onClick={ handleSearch}
             >
               Search
               </Button>
-              {Loading?(<ChatLoading/>): (<span>results</span>)}
+            </Box>
+            {Loading?(<ChatLoading/>): (<span>results</span>)}
+            
           </DrawerBody>
-
+        
           <DrawerFooter>
             <Button variant='outline' mr={3} onClick={onClose}>
               Cancel
