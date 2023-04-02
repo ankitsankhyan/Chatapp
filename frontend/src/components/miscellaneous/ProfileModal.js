@@ -16,7 +16,7 @@ import {
 // this is an reusable component i.e if children is passed then it will be opened via children otherwise from an icon
 const ProfileModal = ({ user, children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+   console.log(user, 'from profile');
   return (
     <>
       {children ? (
