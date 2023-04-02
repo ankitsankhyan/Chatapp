@@ -1,22 +1,70 @@
 import React, { useState } from "react";
 import { Box, Button, Tooltip, Text } from "@chakra-ui/react";
 import { Avatar, AvatarBadge, AvatarGroup } from '@chakra-ui/react'
+import ChatLoading from './chatloading.js';
 import {
-    Menu,
+   useToast,
+     Menu,
     MenuButton,
     MenuList,
     MenuItem,
+    Input
+  } from '@chakra-ui/react'
+  import {
+    Drawer,
+    DrawerBody,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerCloseButton,
   } from '@chakra-ui/react'
 import {BellIcon, ChevronDownIcon} from '@chakra-ui/icons'
 import {ChatState} from '../../context/chatProvider';
 import ProfileModal from './ProfileModal'
+import { useDisclosure } from '@chakra-ui/react'
+import axios from "axios";
+
+
+
 const SideDrawer = () => {
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [Loading, setLoading] = useState(false);
   const [LoadingChat, setLoadingChat] = useState();
   const user= ChatState();
-  console.log(ProfileModal);
+  const { isOpen, onOpen, onClose } = useDisclosure()
+   const btnRef = React.useRef()
+  const toast = useToast();
+   const handleSearch=async()=>{
+    console.log('running');
+     if(!search){
+      toast({
+        title: "Please Enter Something in Search!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+      return;
+     }
+
+     try{
+      setLoading(true);
+      const config = {
+        headers:{
+          Authorization: `Bearer ${user.token}`,
+        }
+      
+      };
+      const {data} = await axios.get(`/api/user/?search=${search}`, config);
+      setLoading(false);
+      setSearchResult(data)
+     }catch(error){
+
+     }
+   };
+
   return (
     <>
     
@@ -29,9 +77,9 @@ const SideDrawer = () => {
        borderWidth='5px'
       >
         <Tooltip label="Search Users to Chat" hasArrow placement="bottom-end">
-          <Button variant="ghost">
+          <Button variant="ghost" ref={btnRef} onClick = {onOpen}>
             <i class="fas fa-search"></i>
-            <Text d={{ base: "none", md: "flex" }} px={"4"}>
+            <Text d={{ base: "none", md: "flex" }} px={"4"} >
               Search Users
             </Text>
           </Button>
@@ -56,6 +104,40 @@ const SideDrawer = () => {
  </Menu>
 </div>
       </Box>
+
+ 
+   
+      <Drawer
+        isOpen={isOpen}
+        placement='left'
+        onClose={onClose}
+        finalFocusRef={btnRef}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Search Users</DrawerHeader>
+
+          <DrawerBody display={'Flex'}>
+            <Input mx={1} placeholder='Type here...' />
+            <Button 
+            colorScheme='blue'
+            onClick={ handleSearch}
+            >
+              Search
+              </Button>
+              {Loading?(<ChatLoading/>): (<span>results</span>)}
+          </DrawerBody>
+
+          <DrawerFooter>
+            <Button variant='outline' mr={3} onClick={onClose}>
+              Cancel
+            </Button>
+           
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
     </>
   );
 };
