@@ -23,16 +23,25 @@ import {BellIcon, ChevronDownIcon} from '@chakra-ui/icons'
 import {ChatState} from '../../context/chatProvider';
 import ProfileModal from './ProfileModal'
 import { useDisclosure } from '@chakra-ui/react'
+import UserListItem from  '../UserAvatar/UserListItem.js'
 import axios from "axios";
 
 
-
 const SideDrawer = () => {
+  
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [Loading, setLoading] = useState(false);
   const [LoadingChat, setLoadingChat] = useState();
-  const user = ChatState();
+  const {
+    setSelectedChat,
+    user,
+    notification,
+    setNotification,
+    chats,
+    setChats,
+  } = ChatState();
+
   const { isOpen, onOpen, onClose } = useDisclosure()
    const btnRef = React.useRef()
   const toast = useToast();
@@ -42,7 +51,9 @@ const SideDrawer = () => {
    }
   // 
    const handleSearch=async()=>{
-   
+   var user = localStorage.getItem('userInfo');
+   user = JSON.parse(user);
+   user = user.data;
      if(!search){
       toast({
         title: "Please Enter Something in Search!",
@@ -53,8 +64,8 @@ const SideDrawer = () => {
       });
       return;
      }
+  
 setLoading(true);
-setLoading(false);
      try{
     
       const config = {
@@ -63,10 +74,13 @@ setLoading(false);
         }
       
       };
-      const {data} = await axios.get(`/api/user/?search=${search}`, config);
+      const data = await axios.get(`/api/user/?search=${search}`, config);
+      console.log(data);
       setLoading(false);
-      setSearchResult(data)
+      setSearchResult(data.data)
      }catch(error){
+     
+      console.log(error);
       setLoading(false);
       toast({
         title: "Could not retrive data",
@@ -80,6 +94,36 @@ setLoading(false);
      }
    };
 
+   const accessChat = async (userId) => {
+    console.log(userId);
+
+    try {
+      setLoadingChat(true);
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.post(`/api/chat`, { userId }, config);
+
+      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      setSelectedChat(data);
+      setLoadingChat(false);
+      onClose();
+    } catch (error) {
+      toast({
+        title: "Error fetching the chat",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+  };
+
+ console.log(searchResult, 'is my result');
   return (
     <>
     
@@ -146,7 +190,15 @@ setLoading(false);
               Search
               </Button>
             </Box>
-            {Loading?(<ChatLoading/>): (<span>results</span>)}
+            {Loading?(<ChatLoading/>): (
+              searchResult.map((user) => (
+                <UserListItem
+                  key={user._id}
+                  user={user}
+                  handleFunction={() => accessChat(user._id)}
+                />
+              ))
+            )}
             
           </DrawerBody>
         

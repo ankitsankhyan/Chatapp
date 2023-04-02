@@ -32,11 +32,13 @@ const Login = () => {
         var data = await axios.post("/api/user/login", {
           email,password
         }, config);
+
+        
       }catch(e){
           console.log(e.response.data);
       }
-     
-console.log(data);
+      localStorage.setItem("userInfo", JSON.stringify(data));
+
      
 
       if(data){

@@ -15,7 +15,7 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("User Already Exists");
   }
-
+   
   const user = await User.create({
     name,
     email,
@@ -42,9 +42,10 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const authUser = asyncHandler(async(req, res)=>{
   const{email,password} = req.body;
+  console.log(email, password);
   const user = await User.findOne({email});
-  
-  console.log(user.matchPassword);
+  console.log(user);
+
   // user doc will have that function written in model
   if (user && (user.matchPassword(password))) {
     console.log(user, "after matching password");
@@ -65,6 +66,8 @@ const authUser = asyncHandler(async(req, res)=>{
 const allUsers = asyncHandler(async(req, res) => {
   // if we have no keyword then all users are returned as at that time 
   // users
+  console.log('running');
+  console.log(req.query.search);
   const keyword = req.query.search
   ? {
       $or: [
