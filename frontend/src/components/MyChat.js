@@ -22,11 +22,12 @@ const MyChat = () => {
     try {
       const config = {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${user.data.token}`,
         },
       };
 
       const { data } = await axios.get("/api/chat", config);
+      
       setChats(data);
     } catch (error) {
       toast({
@@ -49,7 +50,7 @@ const MyChat = () => {
   },[]);
   
   
-  
+  console.log(loggedUser, chats);
   return (
     <Box  
     display={{ base: selectedChat ? "none" : "flex", md: "flex" }}

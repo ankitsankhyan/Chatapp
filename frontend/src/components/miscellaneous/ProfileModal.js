@@ -12,11 +12,12 @@ import {
   IconButton,
   Text,
   Image,
+  Center
 } from "@chakra-ui/react";
 // this is an reusable component i.e if children is passed then it will be opened via children otherwise from an icon
 const ProfileModal = ({ user, children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-   console.log(user, 'from profile');
+  
   return (
     <>
       {children ? (
@@ -33,7 +34,8 @@ const ProfileModal = ({ user, children }) => {
             d="flex"
             justifyContent="center"
           >
-            {user.name}
+            <Center> {user.name}</Center>
+           
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody
@@ -42,17 +44,22 @@ const ProfileModal = ({ user, children }) => {
             alignItems="center"
             justifyContent="space-between"
           >
-            <Image
+            <Center> 
+              <Image
               borderRadius="full"
               boxSize="150px"
               src={user.pic}
               alt={user.name}
-            />
+            /></Center>
+           
             <Text
               fontSize={{ base: "28px", md: "30px" }}
               fontFamily="Work sans"
             >
+              <Center>
               Email: {user.email}
+              </Center>
+             
             </Text>
           </ModalBody>
           <ModalFooter>
