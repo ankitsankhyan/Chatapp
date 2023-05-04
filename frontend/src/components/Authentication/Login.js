@@ -3,7 +3,9 @@ import {FormLabel,Input, FormControl, VStack ,InputGroup,Button,InputRightElemen
 import { useState } from 'react';
 import axios from 'axios';
 import { useToast } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
+    var navigate = useNavigate();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [show, setshow] = useState('false');
@@ -51,7 +53,7 @@ const Login = () => {
           position: "bottom",
         });
 
-        
+        navigate('/api/chat');
 
 
       }else{

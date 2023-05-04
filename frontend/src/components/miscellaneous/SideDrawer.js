@@ -26,8 +26,9 @@ import ProfileModal from "./ProfileModal";
 import { useDisclosure } from "@chakra-ui/react";
 import UserListItem from "../UserAvatar/UserListItem.js";
 import axios from "axios";
-
+import {useNavigate} from 'react-router-dom'
 const SideDrawer = () => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [Loading, setLoading] = useState(false);
@@ -37,6 +38,19 @@ const SideDrawer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
   const toast = useToast();
+  const handleLogout = ()=>{
+    
+    toast({
+      title: "Log-out Successful",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+      position: "top",
+    });
+    localStorage.removeItem("userInfo");
+    navigate('/');
+    
+  }
   const searchquery = (query) => {
     setSearch(query);
   };
@@ -168,7 +182,7 @@ const SideDrawer = () => {
               </ProfileModal>
               
               
-              <MenuItem>LogOut</MenuItem>
+              <MenuItem onClick = {handleLogout}>LogOut</MenuItem>
             </MenuList>
           </Menu>
         </div>
