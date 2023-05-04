@@ -44,7 +44,7 @@ const authUser = asyncHandler(async(req, res)=>{
   const{email,password} = req.body;
   console.log(email, password);
   const user = await User.findOne({email});
-  console.log(user);
+  console.log(user, '++1');
 
   // user doc will have that function written in model
   if (user && (user.matchPassword(password))) {

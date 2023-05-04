@@ -104,7 +104,9 @@ const MyChat = () => {
                 py={2}
                 borderRadius="lg"
                 key={chat._id}
+                display={"flex"}
               >
+                
                 <Text>
                   {!chat.isGroupChat
                     ? getSender(loggedUser, chat.users)
