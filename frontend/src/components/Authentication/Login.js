@@ -4,12 +4,18 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import {ChatState} from '../../context/chatProvider';
+
 const Login = () => {
     var navigate = useNavigate();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [show, setshow] = useState('false');
     var toast = useToast();
+
+    const context = ChatState();
+    
+    
     const handleClick = ()=>{
         setshow(!show);
     }
@@ -34,13 +40,13 @@ const Login = () => {
         var data = await axios.post("/api/user/login", {
           email,password
         }, config);
-
+        context.setUser(data);
         
       }catch(e){
           console.log(e.response.data);
       }
       localStorage.setItem("userInfo", JSON.stringify(data));
-
+      
      
 
       if(data){

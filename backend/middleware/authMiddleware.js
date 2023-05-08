@@ -13,6 +13,7 @@ const protect = asyncHandler(async (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
 
       //decodes token id
+       console.log(token, 'is token');
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 // this means that user is searched in data
       req.user = await User.findById(decoded.id).select("-password");

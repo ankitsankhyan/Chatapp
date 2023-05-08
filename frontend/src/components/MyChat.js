@@ -7,14 +7,14 @@ import { Box, Button,Text,Stack } from "@chakra-ui/react";
 import { AddIcon } from '@chakra-ui/icons';
 import Chatloading from './miscellaneous/chatloading.js';
 import { getSender } from '../config/ChatLogics';
-
+import  GroupChatModel from './miscellaneous/GroupChatModel'
 const MyChat = () => {
   const [loggedUser, setLoggedUser] = useState();
 
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
 
   const toast = useToast();
-
+  
   const fetchChats = async () => {
     // console.log(user._id);
     // Note this is get function where we did not mentioned type of
@@ -72,7 +72,9 @@ const MyChat = () => {
     justifyContent="space-between"
     alignItems={"center"}
     >
-      My Chats
+       My Chats
+      <GroupChatModel>
+     
      <Button 
      d="flex"
      fontSize = {{base:"17px", md:"10px", lg:"17px"}}
@@ -80,6 +82,7 @@ const MyChat = () => {
      >
      New Group Chat
      </Button>
+     </GroupChatModel>
     </Box>
 
     <Box

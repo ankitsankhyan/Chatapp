@@ -26,7 +26,7 @@ import ProfileModal from "./ProfileModal";
 import { useDisclosure } from "@chakra-ui/react";
 import UserListItem from "../UserAvatar/UserListItem.js";
 import axios from "axios";
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 const SideDrawer = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
@@ -38,8 +38,7 @@ const SideDrawer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
   const toast = useToast();
-  const handleLogout = ()=>{
-    
+  const handleLogout = () => {
     toast({
       title: "Log-out Successful",
       status: "success",
@@ -48,9 +47,8 @@ const SideDrawer = () => {
       position: "top",
     });
     localStorage.removeItem("userInfo");
-    navigate('/');
-    
-  }
+    navigate("/");
+  };
   const searchquery = (query) => {
     setSearch(query);
   };
@@ -101,7 +99,7 @@ const SideDrawer = () => {
     try {
       setLoadingChat(true);
       // on sending data post content type must be specified
-      console.log(user,'it is actual token of user');
+      console.log(user, "it is actual token of user");
       const config = {
         headers: {
           "Content-type": "application/json",
@@ -115,11 +113,9 @@ const SideDrawer = () => {
       console.log(data);
       // chats is the total chats that user has made and data is new created chat with selected user
       // if chat does not exist between both user then we will add the chat
-     if(chats){
-      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
-     }
-       
-      
+      if (chats) {
+        if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      }
 
       setSelectedChat(data);
       setLoadingChat(false);
@@ -178,11 +174,10 @@ const SideDrawer = () => {
             </MenuButton>
             <MenuList>
               <ProfileModal user={user.data}>
-              <MenuItem>My Profile</MenuItem>
+                <MenuItem>My Profile</MenuItem>
               </ProfileModal>
-              
-              
-              <MenuItem onClick = {handleLogout}>LogOut</MenuItem>
+
+              <MenuItem onClick={handleLogout}>LogOut</MenuItem>
             </MenuList>
           </Menu>
         </div>
