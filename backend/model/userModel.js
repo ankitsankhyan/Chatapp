@@ -28,8 +28,8 @@ const userSchema = mongoose.Schema(
   }
 );
 userSchema.pre("save", async function (next) {
- 
-  if (!this.ismodified) {
+//  this if ensures to check if data is modified only once
+  if (this.isModified("password")) {
   
 
     const salt = await bcrypt.genSalt(10); // generates random string which is used to hash password
@@ -45,3 +45,4 @@ userSchema.methods.matchPassword = async function (enterPassword) {
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
+

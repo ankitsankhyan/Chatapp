@@ -99,7 +99,7 @@ const SideDrawer = () => {
     try {
       setLoadingChat(true);
       // on sending data post content type must be specified
-      console.log(user, "it is actual token of user");
+     
       const config = {
         headers: {
           "Content-type": "application/json",
@@ -110,11 +110,11 @@ const SideDrawer = () => {
       // requenst to make chat in API and chat which is created will be sent in data
 
       const { data } = await axios.post(`/api/chat`, { userId }, config);
-      console.log(data);
+      
       // chats is the total chats that user has made and data is new created chat with selected user
       // if chat does not exist between both user then we will add the chat
       if (chats) {
-        if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+        if (!chats.find((c) => c._id === data._id)) setChats([...chats, data]);
       }
 
       setSelectedChat(data);

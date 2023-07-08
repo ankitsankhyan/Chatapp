@@ -4,15 +4,16 @@ import {useState , useEffect} from 'react'
 import { useToast} from '@chakra-ui/react';
 import axios from 'axios';
 import { Box, Button,Text,Stack } from "@chakra-ui/react";
-import { AddIcon } from '@chakra-ui/icons';
+import { Adds } from '@chakra-ui/icons';
 import Chatloading from './miscellaneous/chatloading.js';
 import { getSender } from '../config/ChatLogics';
 import  GroupChatModel from './miscellaneous/GroupChatModel'
-const MyChat = () => {
+import { AddIcon } from '@chakra-ui/icons';
+const MyChat = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
 
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
-
+  console.log(chats, 'are chats');
   const toast = useToast();
   
   const fetchChats = async () => {
@@ -47,10 +48,10 @@ const MyChat = () => {
   setLoggedUser(data);
     
     fetchChats();
-  },[]);
+  },[ fetchAgain ]);
   
-  
-  console.log(loggedUser, chats);
+ 
+
   return (
     <Box  
     display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
@@ -99,7 +100,7 @@ const MyChat = () => {
           <Stack overflowY="scroll">
             {chats.map((chat) => (
               <Box
-                onClick={() => setSelectedChat(chat)}
+                onClick={() => { setSelectedChat(chat);}}
                 cursor="pointer"
                 bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
                 color={selectedChat === chat ? "white" : "black"}

@@ -8,6 +8,7 @@ function App() {
     <div className="App">
    
       <Routes>
+        
         <Route path = "/" element={<HomePage/>}/>
         <Route path = "/api/chat" element={<ChatPage/>}/>
       </Routes>
